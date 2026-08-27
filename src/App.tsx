@@ -48,6 +48,9 @@ function App() {
   const [message, setMessage] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  const [settingsTab, setSettingsTab] = useState('Appearance')
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -84,13 +87,15 @@ function App() {
 
   if (isLoggedIn) {
     return (
-      <div className={`dashboard-shell ${isSidebarOpen ? 'sidebar-open' : 'sidebar-collapsed'}`}>
+      <div className={`app-root ${theme === 'dark' ? 'theme-dark' : 'theme-light'}`}>
+        <div className={`settings-overlay ${isSettingsOpen ? 'open' : ''}`} onClick={() => setIsSettingsOpen(false)} />
+
         <aside className={`sidebar ${isSidebarOpen ? 'open' : 'collapsed'}`}>
           <div className="sidebar-brand">
             <div className="brand-mark">M</div>
             <div>
-              <p className="eyebrow">MCM Mana</p>
-              <h3>Workspace</h3>
+              <p className="eyebrow">Workspace</p>
+              <h3>Overview</h3>
             </div>
           </div>
 
@@ -147,19 +152,23 @@ function App() {
               >
                 ☰
               </button>
-
-              <div className="header-page-label">
-                <span className="eyebrow">Overview</span>
-                <h1>{activeNav}</h1>
-              </div>
             </div>
 
             <div className="topbar-actions">
-              <button type="button" className="icon-btn" aria-label="Settings">
+              <button
+                type="button"
+                className="icon-btn settings-btn"
+                aria-label="Settings"
+                onClick={() => setIsSettingsOpen(true)}
+              >
                 ⚙
               </button>
             </div>
           </header>
+
+          <section className="page-heading-wrap">
+            <h1 className="page-heading">Overview</h1>
+          </section>
 
           <section className="stats-grid">
             {statCards.map((card) => (
@@ -255,17 +264,119 @@ function App() {
             </div>
           </section>
         </main>
+
+        <aside className={`settings-panel ${isSettingsOpen ? 'open' : ''}`} aria-label="Settings panel">
+          <div className="settings-header">
+            <div className="settings-brand">
+              <span className="settings-brand-mark">M</span>
+              <div>
+                <p className="eyebrow">Workspace</p>
+                <h2>Settings</h2>
+              </div>
+            </div>
+            <button type="button" className="close-btn" onClick={() => setIsSettingsOpen(false)} aria-label="Close settings">
+              ✕
+            </button>
+          </div>
+
+          <div className="settings-body">
+            <nav className="settings-sidebar" aria-label="Settings navigation">
+              {['Appearance', 'Workspace', 'Security'].map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  className={settingsTab === tab ? 'settings-nav-item active' : 'settings-nav-item'}
+                  onClick={() => setSettingsTab(tab)}
+                >
+                  {tab}
+                </button>
+              ))}
+            </nav>
+
+            <div className="settings-content">
+              <div className="settings-card settings-card-large">
+                <div className="settings-card-header">
+                  <span className="settings-card-title">{settingsTab}</span>
+                </div>
+
+                {settingsTab === 'Appearance' && (
+                  <>
+                    <div className="theme-switcher">
+                      <button
+                        type="button"
+                        className={theme === 'light' ? 'theme-option active' : 'theme-option'}
+                        onClick={() => setTheme('light')}
+                      >
+                        <span>☀</span>
+                        Light
+                      </button>
+                      <button
+                        type="button"
+                        className={theme === 'dark' ? 'theme-option active' : 'theme-option'}
+                        onClick={() => setTheme('dark')}
+                      >
+                        <span>☾</span>
+                        Dark
+                      </button>
+                    </div>
+
+                    <div className="settings-list compact">
+                      <button type="button" className="settings-list-item">
+                        <span>Density</span>
+                        <span className="settings-hint">Comfortable</span>
+                      </button>
+                      <button type="button" className="settings-list-item">
+                        <span>Accent</span>
+                        <span className="settings-hint">Violet</span>
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {settingsTab === 'Workspace' && (
+                  <div className="settings-list compact">
+                    <button type="button" className="settings-list-item">
+                      <span>Notifications</span>
+                      <span className="settings-hint">On</span>
+                    </button>
+                    <button type="button" className="settings-list-item">
+                      <span>Layout</span>
+                      <span className="settings-hint">Sidebar</span>
+                    </button>
+                    <button type="button" className="settings-list-item">
+                      <span>Default page</span>
+                      <span className="settings-hint">Overview</span>
+                    </button>
+                  </div>
+                )}
+
+                {settingsTab === 'Security' && (
+                  <div className="settings-list compact">
+                    <button type="button" className="settings-list-item">
+                      <span>Password</span>
+                      <span className="settings-hint">Changed 2w ago</span>
+                    </button>
+                    <button type="button" className="settings-list-item">
+                      <span>Two-factor</span>
+                      <span className="settings-hint">Enabled</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
     )
   }
 
   return (
-    <main className="auth-shell">
+    <main className={`auth-shell ${theme === 'dark' ? 'theme-dark' : 'theme-light'}`}>
       <section className="auth-card" aria-label={isSignUp ? 'Sign up form' : 'Sign in form'}>
         <div className="brand-row">
           <div className="brand-mark">M</div>
           <div>
-            <p className="eyebrow">MCM Mana</p>
+            <p className="eyebrow">Workspace</p>
             <h1>{isSignUp ? 'Create account' : 'Welcome back'}</h1>
           </div>
         </div>
