@@ -44,13 +44,15 @@ function App() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [remember, setRemember] = useState(true)
+  const [remember, setRemember] = useState(false)
   const [message, setMessage] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [settingsTab, setSettingsTab] = useState('Appearance')
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false)
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -82,7 +84,7 @@ function App() {
     setEmail('')
     setPassword('')
     setConfirmPassword('')
-    setRemember(true)
+    setRemember(false)
   }
 
   if (isLoggedIn) {
@@ -429,23 +431,43 @@ function App() {
 
           <label>
             Password
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder={isSignUp ? 'Create a password' : '••••••••'}
-            />
+            <div className="password-field">
+              <input
+                type={isPasswordVisible ? 'text' : 'password'}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder={isSignUp ? 'Create a password' : '••••••••'}
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
+                onClick={() => setIsPasswordVisible((current) => !current)}
+              >
+                {isPasswordVisible ? '🙈' : '👁'}
+              </button>
+            </div>
           </label>
 
           {isSignUp && (
             <label>
               Confirm password
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(event) => setConfirmPassword(event.target.value)}
-                placeholder="Re-enter password"
-              />
+              <div className="password-field">
+                <input
+                  type={isConfirmPasswordVisible ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  placeholder="Re-enter password"
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  aria-label={isConfirmPasswordVisible ? 'Hide confirm password' : 'Show confirm password'}
+                  onClick={() => setIsConfirmPasswordVisible((current) => !current)}
+                >
+                  {isConfirmPasswordVisible ? '🙈' : '👁'}
+                </button>
+              </div>
             </label>
           )}
 
